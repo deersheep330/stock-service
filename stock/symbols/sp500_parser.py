@@ -3,6 +3,7 @@ import requests
 from lxml import etree
 from ..utilities import remove_common_words_from_corp_name
 
+
 class Sp500Parser(SymbolParser):
 
     def __init__(self):

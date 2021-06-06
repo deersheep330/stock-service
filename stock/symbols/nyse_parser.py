@@ -2,6 +2,7 @@ from .symbol_parser import SymbolParser
 import requests
 from ..utilities import remove_common_words_from_corp_name
 
+
 class NYSEParser(SymbolParser):
 
     def __init__(self):

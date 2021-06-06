@@ -1,4 +1,4 @@
-from .stock import Stock
+from .stock_symbol import StockSymbol
 from .ptt_trend import PttTrend
 from .reunion_trend import ReunionTrend
 from .twse_over_bought import TwseOverBought

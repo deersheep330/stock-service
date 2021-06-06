@@ -1,5 +1,6 @@
 from .sp500_parser import Sp500Parser
 
+
 class SoxParser(Sp500Parser):
 
     def __init__(self):

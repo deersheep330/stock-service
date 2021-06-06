@@ -1,5 +1,6 @@
 from .sp500_parser import Sp500Parser
 
+
 class NasdaqParser(Sp500Parser):
 
     def __init__(self):

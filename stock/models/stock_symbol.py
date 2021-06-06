@@ -2,9 +2,10 @@ from sqlalchemy import Column, String
 
 from ..db import Base
 
-class Stock(Base):
 
-    __tablename__ = 'stock'
+class StockSymbol(Base):
+
+    __tablename__ = 'stock_symbol'
 
     symbol = Column(String(16), nullable=False, primary_key=True)
     name = Column(String(64), nullable=False)

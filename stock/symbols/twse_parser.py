@@ -2,6 +2,7 @@ from .symbol_parser import SymbolParser
 from twstock import twse, tpex, __update_codes as update_codes
 from ..utilities import remove_non_han_from_corp_name
 
+
 class TWSEParser(SymbolParser):
 
     def __init__(self):

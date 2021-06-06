@@ -1,19 +1,20 @@
 import json
-from abc import ABC
 import os
-import grpc
 
-from symbols.utils import get_grpc_hostname
-from api.protos import database_pb2_grpc
-from api.protos.database_pb2 import Stock
+from stock.db import upsert, start_session, create_engine
+from stock.models import StockSymbol
+from stock.utilities import get_db_connection_url
 
-class SymbolParser(ABC):
+
+class SymbolParser():
 
     def __init__(self):
         self.dict = None
+        self.filename = 'symbols.txt'
+        self.connection_url = get_db_connection_url()
 
     def parse(self):
-        pass
+        raise RuntimeError('should implement parse function')
 
     def get_dict(self):
         return self.dict
@@ -21,12 +22,11 @@ class SymbolParser(ABC):
     def dump_to_file(self):
 
         if self.dict is None or len(self.dict) == 0:
-            pass
+            print('no symbols to dump...')
         else:
+            print(f'==> dump symbols to file...')
 
-            print(f'==> dump to file')
-
-            filename = './symbols/dump/' + self.filename
+            filename = os.path.join(os.getcwd(), 'dump', self.filename)
             os.makedirs(os.path.dirname(filename), exist_ok=True)
 
             with open(filename, 'w+', encoding='utf-8') as f:
@@ -34,20 +34,27 @@ class SymbolParser(ABC):
 
         return self
 
-    def update_db(self):
+    def insert_into_db(self):
 
         if self.dict is None or len(self.dict) == 0:
-            pass
+            print('no symbols to insert into db...')
         else:
-            print(f'==> update db')
+            print(f'==> insert symbols into db...')
+
+            engine = create_engine(self.connection_url)
+            session = start_session(engine)
+            count = 0
+
             try:
-                channel = grpc.insecure_channel(f'{get_grpc_hostname()}:6565')
-                stub = database_pb2_grpc.DatabaseStub(channel)
-                rowcount = stub.upsert_stocks((Stock(symbol=key, name=value) for key, value in self.dict.items()))
-                print(rowcount)
-            except grpc.RpcError as e:
-                status_code = e.code()
-                print(e.details())
-                print(status_code.name, status_code.value)
+                for key, value in self.dict.items():
+                    _dict = {'symbol': key, 'name': value}
+                    rowcount = upsert(session, StockSymbol, _dict)
+                    count += rowcount
+                print(f'{count} records inserted')
+            except Exception as e:
+                print(e)
+            finally:
+                session.commit()
+                session.close()
 
         return self
