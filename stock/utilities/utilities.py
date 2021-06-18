@@ -15,6 +15,10 @@ def get_db_connection_url():
     return read_env('DB_CONNECTION_URL')
 
 
+def get_fugle_api_token():
+    return read_env('FUGLE_API_TOKEN')
+
+
 def remove_common_words_from_corp_name(corp_name):
     return re.sub(r'公司|集團|企業|科技|Corp|Inc|Ltd|CORP|INC|LTD|★|TECHNOLOGIES|LP|PLC', '', corp_name).strip()
 

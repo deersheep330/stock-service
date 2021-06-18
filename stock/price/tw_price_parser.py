@@ -1,21 +1,21 @@
 import datetime
 import requests
-import grpc
 
-from api.protos import database_pb2_grpc
-from api.protos.database_pb2 import StockPrice
-from api.protos.protobuf_datatype_utils import datetime_to_timestamp
-from price.utils import get_api_token, get_grpc_hostname
+from stock.db import create_engine, start_session, insert
+from stock.models import TwseOpenPrice, TwseClosePrice
+from stock.utilities import get_db_connection_url, get_fugle_api_token
 
 
 class TwPriceParser():
 
     def __init__(self):
 
-        self.token = get_api_token()
+        # get api token
+        self.token = get_fugle_api_token()
 
-        channel = grpc.insecure_channel(f'{get_grpc_hostname()}:6565')
-        self.stub = database_pb2_grpc.DatabaseStub(channel)
+        # setup db connection
+        self.connection_url = get_db_connection_url()
+        self.engine = create_engine(self.connection_url)
 
         self.__reset__()
 
@@ -50,47 +50,29 @@ class TwPriceParser():
     def save_open_price_to_db(self):
 
         if self.symbol is None or self.price_open is None or self.datetime is None:
-            print('cannot write missing data to db')
+            print(f'some data missing! cannot write to db: {self.datetime}|{self.symbol}|{self.price_open}')
             return
 
-        timestamp = datetime_to_timestamp(self.datetime)
-        _dict = {
+        session = start_session(self.engine)
+        insert(session, TwseOpenPrice, {
             'symbol': self.symbol,
-            'date': timestamp,
+            'date': self.datetime,
             'price': self.price_open
-        }
-        try:
-            rowcount = self.stub.insert_twse_open_price(StockPrice(
-                symbol=_dict['symbol'],
-                date=_dict['date'],
-                price=_dict['price']
-            ))
-            print(rowcount)
-        except grpc.RpcError as e:
-            status_code = e.code()
-            print(e.details())
-            print(status_code.name, status_code.value)
+        })
+        session.commit()
+        session.close()
 
     def save_close_price_to_db(self):
 
         if self.symbol is None or self.price_close is None or self.datetime is None:
-            print('cannot write missing data to db')
+            print(f'some data missing! cannot write to db: {self.datetime}|{self.symbol}|{self.price_close}')
             return
 
-        timestamp = datetime_to_timestamp(self.datetime)
-        _dict = {
+        session = start_session(self.engine)
+        insert(session, TwseClosePrice, {
             'symbol': self.symbol,
-            'date': timestamp,
+            'date': self.datetime,
             'price': self.price_close
-        }
-        try:
-            rowcount = self.stub.insert_twse_close_price(StockPrice(
-                symbol=_dict['symbol'],
-                date=_dict['date'],
-                price=_dict['price']
-            ))
-            print(rowcount)
-        except grpc.RpcError as e:
-            status_code = e.code()
-            print(e.details())
-            print(status_code.name, status_code.value)
+        })
+        session.commit()
+        session.close()

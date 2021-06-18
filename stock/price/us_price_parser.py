@@ -1,18 +1,19 @@
 from dateutil import parser, tz
 import requests
 from lxml import etree
-import grpc
 
-from api.protos import database_pb2_grpc
-from api.protos.database_pb2 import StockPrice
-from api.protos.protobuf_datatype_utils import datetime_to_timestamp
-from price.utils import get_grpc_hostname
+from stock.db import insert, start_session, create_engine
+from stock.models import UsClosePrice
+from stock.utilities import get_db_connection_url
+
 
 class UsPriceParser():
 
     def __init__(self):
-        channel = grpc.insecure_channel(f'{get_grpc_hostname()}:6565')
-        self.stub = database_pb2_grpc.DatabaseStub(channel)
+        # setup db connection
+        self.connection_url = get_db_connection_url()
+        self.engine = create_engine(self.connection_url)
+
         self.__reset__()
 
     def __reset__(self):
@@ -55,23 +56,14 @@ class UsPriceParser():
     def save_to_db(self):
 
         if self.symbol is None or self.price is None or self.datetime is None:
-            print('cannot write missing data to db')
+            print(f'some data missing! cannot write to db: {self.datetime}|{self.symbol}|{self.price}')
             return
 
-        timestamp = datetime_to_timestamp(self.datetime)
-        _dict = {
+        session = start_session(self.engine)
+        insert(session, UsClosePrice, {
             'symbol': self.symbol,
-            'date': timestamp,
+            'date': self.datetime,
             'price': self.price
-        }
-        try:
-            rowcount = self.stub.insert_us_close_price(StockPrice(
-                symbol=_dict['symbol'],
-                date=_dict['date'],
-                price=_dict['price']
-            ))
-            print(rowcount)
-        except grpc.RpcError as e:
-            status_code = e.code()
-            print(e.details())
-            print(status_code.name, status_code.value)
+        })
+        session.commit()
+        session.close()
