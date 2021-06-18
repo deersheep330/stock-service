@@ -93,3 +93,7 @@ def delete_older_than(session, model, date_field, date_older_than):
 
 def count(session, model):
     return session.query(model).count()
+
+
+def query_newer_than(session, model, date_field, date_newer_than):
+    return session.query(model).filter(date_field >= date_newer_than)
