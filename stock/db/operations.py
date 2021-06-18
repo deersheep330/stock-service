@@ -62,9 +62,9 @@ def insert(session, model, _dict):
 
     stmt = __insert(table).values(_dict)
 
-    print(compile_query(stmt))
+    #print(compile_query(stmt))
     res = session.execute(stmt)
-    print(f'{res.rowcount} row(s) matched')
+    #print(f'{res.rowcount} row(s) matched')
     return res.rowcount
 
 
