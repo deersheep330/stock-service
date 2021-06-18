@@ -41,4 +41,5 @@ export DB_CONNECTION_URL="root:admin@${DB_HOST}/mydb"
 ```
 python symbol_entry.py
 python ptt_trend_entry.py
+python reunion_entry.py
 ```
