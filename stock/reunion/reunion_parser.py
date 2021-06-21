@@ -18,8 +18,11 @@ class ReunionParser():
     def parse(self):
         print(f'==> parse page: {self.url}')
         options = webdriver.ChromeOptions()
+        prefs = {'profile.default_content_setting_values.notifications': 2}
+        options.add_experimental_option('prefs', prefs)
         options.add_argument('--headless')
         options.add_argument('--no-sandbox')
+        options.add_argument('window-size=1920,1200')
 
         driver = webdriver.Chrome(executable_path=ChromeDriverManager().install(), options=options)
 
