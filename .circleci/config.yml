@@ -1,0 +1,93 @@
+version: 2.1
+
+orbs:
+  aws-ecr: circleci/aws-ecr@6.15
+  aws-ecs: circleci/aws-ecs@2.0.0
+  terraform: circleci/terraform@2.1.0
+
+jobs:
+  test:
+    machine:
+      image: ubuntu-2004:202010-01
+    steps:
+      - checkout
+      - run:
+          name: setup mysql
+          command: |
+            docker run -it --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=admin -e MYSQL_DATABASE=mydb -d -t mysql:8.0.23
+      - run:
+          name: export environment variables
+          command: |
+            echo "export DB_HOST=\"$(ip -f inet addr show docker0 | grep -Po 'inet \K[\d.]+'):3306\"" >> $BASH_ENV
+            source $BASH_ENV
+            echo "export DB_CONNECTION_URL=\"root:admin@${DB_HOST}/mydb\"" >> $BASH_ENV
+      - run:
+          name: echo exported variables for test
+          command: |
+            echo $DB_HOST
+            echo $DB_CONNECTION_URL
+      - run:
+          name: build project docker image
+          command: |
+            docker build -f Dockerfile-test -t stock-test .
+      - run:
+          name: run test
+          command: |
+            docker run -it -v "$(pwd)/test-results":/home/app/test-results -e DB_HOST=$DB_HOST -e DB_CONNECTION_URL=$DB_CONNECTION_URL rent-test
+      - store_test_results:
+          path: test-results
+      - store_artifacts:
+          path: test-results
+  terraform-deploy:
+    executor: terraform/default
+    shell: /bin/sh -leo pipefail
+    environment:
+      - BASH_ENV: /etc/profile
+    steps:
+      - checkout
+      - run:
+          name: export CIRCLE_SHA1 for image version
+          command: |
+            echo "export TF_VAR_IMAGE_VERSION=\"${CIRCLE_SHA1}\"" >> $BASH_ENV
+            source $BASH_ENV
+      - run:
+          name: echo exported variables for test
+          command: |
+            echo $TF_VAR_IMAGE_VERSION
+      - terraform/init:
+          path: terraform
+      - terraform/validate:
+          path: terraform
+      - terraform/plan:
+          path: terraform
+      - terraform/apply:
+          path: terraform
+
+workflows:
+  version: 2.1
+  test-and-deploy:
+    jobs:
+      - test
+      - aws-ecr/build-and-push-image:
+          requires:
+            - test
+          context:
+            - AWS_CONFIG
+          filters:
+            branches:
+              only:
+                - master
+          account-url: AWS_ECR_ACCOUNT_URL
+          region: AWS_DEFAULT_REGION
+          repo: 'rent'
+          tag: 'latest,${CIRCLE_SHA1}'
+      - terraform-deploy:
+          requires:
+            - aws-ecr/build-and-push-image
+          context:
+            - AWS_CONFIG
+            - TERRAFORM_CONFIG
+          filters:
+            branches:
+              only:
+                - master
