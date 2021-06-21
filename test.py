@@ -26,7 +26,8 @@ if __name__ == '__main__':
 
     print('[2] ptt test:')
 
-    trends = PttTrends()
+    print('ignore')
+    #trends = PttTrends()
 
     print('[3] reunion test:')
 
@@ -41,7 +42,8 @@ if __name__ == '__main__':
 
     print('[5] quote test:')
 
-    Fugle('overbought', '2330').exec()
+    print('ignore')
+    #Fugle('overbought', '2330').exec()
 
     print('[6] price test:')
 
