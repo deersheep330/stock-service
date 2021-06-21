@@ -1,4 +1,4 @@
-# stock-service
+# stock-service [![CircleCI](https://circleci.com/gh/deersheep330/stock-service.svg?style=shield)](https://app.circleci.com/pipelines/github/deersheep330/stock-service)
 
 #### local run
 

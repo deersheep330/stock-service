@@ -4,9 +4,16 @@ from stock.ptt import PttTrends
 from stock.quote import Fugle
 from stock.reunion import ReunionTrends
 from stock.symbols import Sp500Parser, DowJonesParser, NasdaqParser, SoxParser, TWSEParser, NYSEParser
+from stock.utilities import get_db_connection_url
+from stock.db import create_engine, create_all_tables_from_orm
 
 
 if __name__ == '__main__':
+
+    print('==> init database')
+
+    engine = create_engine(get_db_connection_url())
+    create_all_tables_from_orm(engine)
 
     print('[1] symbol test:')
 
