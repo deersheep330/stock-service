@@ -6,6 +6,8 @@ from stock.utilities import get_db_connection_url
 
 if __name__ == '__main__':
 
+    print('==> symbol_entry')
+
     print('==> init database')
 
     engine = create_engine(get_db_connection_url())

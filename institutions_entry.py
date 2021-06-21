@@ -2,6 +2,8 @@ from stock.institutions import InstitutionsOverboughtParser, InstitutionsOversol
 
 if __name__ == '__main__':
 
+    print('==> institutions_entry')
+
     overbought_parser = InstitutionsOverboughtParser()
     overbought_parser.parse().save_to_db()
 

@@ -8,6 +8,8 @@ from stock.utilities import get_db_connection_url
 
 if __name__ == '__main__':
 
+    print('==> quote_entry')
+
     # setup db connection
     connection_url = get_db_connection_url()
     engine = create_engine(connection_url)
