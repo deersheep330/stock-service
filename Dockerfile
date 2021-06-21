@@ -21,14 +21,15 @@ COPY ./ptt_trend_entry.py .
 COPY ./reunion_entry.py .
 COPY ./institutions_entry.py .
 COPY ./quote_entry.py .
-COPY ./price_entry.py .
+COPY ./open_price_entry.py .
+COPY ./close_price_entry.py .
 
 COPY ./cron_entrypoint.sh .
 COPY ./wait-for-it.sh .
 
 # Run the command on container startup
 # https://stackoverflow.com/questions/37458287/how-to-run-a-cron-job-inside-a-docker-container
-CMD /bin/bash ./cron_entrypoint.sh > /proc/1/fd/1 2>/proc/1/fd/2
+CMD /usr/local/bin/python /home/app/symbol_entry.py && /bin/bash ./cron_entrypoint.sh > /proc/1/fd/1 2>/proc/1/fd/2
 # CMD ["cron", "-f"]
 
 #Quick note about a gotcha:

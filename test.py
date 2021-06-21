@@ -10,12 +10,12 @@ if __name__ == '__main__':
 
     print('[1] symbol test:')
 
-    nyse = NYSEParser().parse().get_dict()
-    sp500 = Sp500Parser().parse().get_dict()
-    dowjones = DowJonesParser().get_dict()
-    nasdaq = NasdaqParser().parse().get_dict()
-    sox = SoxParser().parse().get_dict()
-    twse = TWSEParser().parse().get_dict()
+    nyse = NYSEParser().parse().insert_into_db().get_dict()
+    sp500 = Sp500Parser().parse().insert_into_db().get_dict()
+    dowjones = DowJonesParser().insert_into_db().get_dict()
+    nasdaq = NasdaqParser().insert_into_db().parse().get_dict()
+    sox = SoxParser().parse().insert_into_db().get_dict()
+    twse = TWSEParser().parse().insert_into_db().get_dict()
 
     print('[2] ptt test:')
 
