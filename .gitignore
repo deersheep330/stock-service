@@ -24,6 +24,5 @@ __pycache__
 # properties file
 *.ini
 
-# test results
-test-results
-*.png
+# dump
+dump*.txt

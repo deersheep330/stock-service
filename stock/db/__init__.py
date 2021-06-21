@@ -6,3 +6,4 @@ from .operations import start_session
 from .operations import insert, upsert
 from .operations import delete_older_than
 from .operations import count
+from .operations import query_newer_than, query_date_equal_to, query_unique

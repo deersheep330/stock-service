@@ -96,4 +96,12 @@ def count(session, model):
 
 
 def query_newer_than(session, model, date_field, date_newer_than):
-    return session.query(model).filter(date_field >= date_newer_than)
+    return session.query(model).filter(date_field >= date_newer_than).all()
+
+
+def query_date_equal_to(session, model, date_field, date):
+    return session.query(model).filter(date_field == date).all()
+
+
+def query_unique(session, model, field, value):
+    return session.query(model).filter(field == value).first()
