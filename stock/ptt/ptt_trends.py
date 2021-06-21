@@ -1,6 +1,7 @@
 from copy import deepcopy
+from datetime import datetime, timedelta
 
-from stock.db import create_engine, start_session, insert
+from stock.db import create_engine, start_session, insert, delete_older_than
 from stock.models import StockSymbol, PttTrend
 from stock.nlp import JiebaPipeline
 from stock.utilities import get_db_connection_url
@@ -15,6 +16,11 @@ class PttTrends():
         self.connection_url = get_db_connection_url()
         self.engine = create_engine(self.connection_url)
         self.session = start_session(self.engine)
+
+        count = delete_older_than(self.session, PttTrend, PttTrend.date,
+                                  datetime.now().date() - timedelta(days=180))
+        print(f'delete {count} old PttTrend records')
+        self.session.commit()
 
         # step 1
         # get stock symbols and names for constructing custom dict later

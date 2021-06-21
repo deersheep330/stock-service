@@ -1,8 +1,10 @@
+from datetime import datetime, timedelta
+
 from dateutil import parser, tz
 import requests
 from lxml import etree
 
-from stock.db import insert, start_session, create_engine
+from stock.db import insert, start_session, create_engine, delete_older_than
 from stock.models import UsClosePrice
 from stock.utilities import get_db_connection_url
 
@@ -13,6 +15,13 @@ class UsPriceParser():
         # setup db connection
         self.connection_url = get_db_connection_url()
         self.engine = create_engine(self.connection_url)
+
+        session = start_session(self.engine)
+        count = delete_older_than(session, UsClosePrice, UsClosePrice.date,
+                                  datetime.now().date() - timedelta(days=180))
+        print(f'delete {count} old UsClosePrice records')
+        session.commit()
+        session.close()
 
         self.__reset__()
 

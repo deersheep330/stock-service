@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime, timedelta, time
 import json
 import os
 from pprint import pprint
@@ -6,7 +6,7 @@ import asyncio
 import requests
 from pytz import timezone
 
-from stock.db import create_engine, insert, start_session
+from stock.db import create_engine, insert, start_session, delete_older_than
 from stock.models import FugleOverBought, FugleOverSold
 from stock.utilities import get_fugle_api_token, get_db_connection_url
 
@@ -18,6 +18,16 @@ class Fugle():
         # setup db connection
         self.connection_url = get_db_connection_url()
         self.engine = create_engine(self.connection_url)
+
+        session = start_session(self.engine)
+        count = delete_older_than(session, FugleOverBought, FugleOverBought.date,
+                                  datetime.now().date() - timedelta(days=180))
+        print(f'delete {count} old FugleOverBought records')
+        count = delete_older_than(session, FugleOverSold, FugleOverSold.date,
+                                  datetime.now().date() - timedelta(days=180))
+        print(f'delete {count} old FugleOverSold records')
+        session.commit()
+        session.close()
 
         # get api token
         self.token = get_fugle_api_token()
@@ -44,14 +54,14 @@ class Fugle():
             'unit': 0
         }
 
-        self.on_time = datetime.time(9, 1)
-        self.off_time = datetime.time(13, 32)
+        self.on_time = time(9, 1)
+        self.off_time = time(13, 32)
 
         self.is_closed = False
         self.date = None
 
     def is_active(self):
-        now = datetime.datetime.now(timezone('Asia/Taipei')).time()
+        now = datetime.now(timezone('Asia/Taipei')).time()
         if self.on_time < now < self.off_time:
             return True
         else:
@@ -65,7 +75,7 @@ class Fugle():
             await asyncio.sleep(self.tick)
 
         if len(self.quotes) != 0:
-            self.date = datetime.datetime.strptime(self.quotes[-1]['at'], '%Y-%m-%dT%H:%M:%S.%fZ')
+            self.date = datetime.strptime(self.quotes[-1]['at'], '%Y-%m-%dT%H:%M:%S.%fZ')
             self.diff_units = int(self.ask_units - self.bid_units)
         print(f'[{self.symbol}] {self.date} quote =====>')
         print(f'market close ? {self.is_closed}')

@@ -1,4 +1,6 @@
-from stock.db import create_engine, start_session, insert
+from datetime import datetime, timedelta
+
+from stock.db import create_engine, start_session, insert, delete_older_than
 from stock.models import ReunionTrend
 from stock.utilities import get_db_connection_url
 from .reunion_parser import ReunionParser
@@ -11,6 +13,10 @@ class ReunionTrends():
         self.connection_url = get_db_connection_url()
         self.engine = create_engine(self.connection_url)
         self.session = start_session(self.engine)
+
+        count = delete_older_than(self.session, ReunionTrend, ReunionTrend.date, datetime.now().date() - timedelta(days=180))
+        print(f'delete {count} old ReunionTrend records')
+        self.session.commit()
 
         self.parser = ReunionParser()
         self.parser.parse()

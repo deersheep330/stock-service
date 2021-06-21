@@ -1,7 +1,7 @@
-import datetime
+from datetime import datetime, timedelta
 import requests
 
-from stock.db import create_engine, start_session, insert
+from stock.db import create_engine, start_session, insert, delete_older_than
 from stock.models import TwseOpenPrice, TwseClosePrice
 from stock.utilities import get_db_connection_url, get_fugle_api_token
 
@@ -16,6 +16,16 @@ class TwPriceParser():
         # setup db connection
         self.connection_url = get_db_connection_url()
         self.engine = create_engine(self.connection_url)
+
+        session = start_session(self.engine)
+        count = delete_older_than(session, TwseOpenPrice, TwseOpenPrice.date,
+                                  datetime.now().date() - timedelta(days=180))
+        print(f'delete {count} old TwseOpenPrice records')
+        count = delete_older_than(session, TwseClosePrice, TwseClosePrice.date,
+                                  datetime.now().date() - timedelta(days=180))
+        print(f'delete {count} old TwseClosePrice records')
+        session.commit()
+        session.close()
 
         self.__reset__()
 
@@ -39,7 +49,7 @@ class TwPriceParser():
             self.price_open = float(json['data']['quote']['priceOpen']['price'])
             self.price_close = float(json['data']['quote']['trade']['price'])
             self.datetime = json['data']['quote']['priceOpen']['at']
-            self.datetime = datetime.datetime.strptime(self.datetime, '%Y-%m-%dT%H:%M:%S.%fZ')
+            self.datetime = datetime.strptime(self.datetime, '%Y-%m-%dT%H:%M:%S.%fZ')
 
             print(f'{self.symbol} {self.price_open} {self.price_close} {self.datetime}')
         except Exception as e:
