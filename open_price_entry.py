@@ -15,18 +15,17 @@ if __name__ == '__main__':
     engine = create_engine(get_db_connection_url())
     session = start_session(engine)
 
+    symbol_set = set()
     symbols = query_newer_than(session, TwseOverBought, TwseOverBought.date, datetime.now().date() - timedelta(days=3))
     for symbol in symbols:
-        try:
-            tw_price_parser.parse(symbol.symbol).save_open_price_to_db()
-            print(f'parse {symbol.symbol} open price = {tw_price_parser.price_open}')
-        except Exception as e:
-            print(e)
-
+        symbol_set.add(symbol.symbol)
     symbols = query_newer_than(session, TwseOverSold, TwseOverSold.date, datetime.now().date() - timedelta(days=3))
     for symbol in symbols:
+        symbol_set.add(symbol.symbol)
+
+    for symbol in symbol_set:
         try:
-            tw_price_parser.parse(symbol.symbol).save_open_price_to_db()
-            print(f'parse {symbol.symbol} open price = {tw_price_parser.price_open}')
+            tw_price_parser.parse(symbol).save_open_price_to_db()
+            print(f'parse {symbol} open price = {tw_price_parser.price_open}')
         except Exception as e:
             print(e)
