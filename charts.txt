@@ -1,0 +1,18 @@
+
+
+
+
+
+(tab 1) ptt 14 days   
+        price 14 days
+		14 days popularity sum descending
+
+(tab 2) reunion 14 days
+        price 14 days
+		14 days popularity sum descending
+		
+(tab 3) institution overbought 2 days + higher open price for 3rd day + overbought from fugle 3rd day
+        institution oversold 2 days + lower open price for 3rd day + oversold from fugle 3rd day
+
+		=> have to get institution close price
+		
