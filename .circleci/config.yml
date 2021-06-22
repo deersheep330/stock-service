@@ -33,7 +33,7 @@ jobs:
       - run:
           name: run test
           command: |
-            docker run -it -v "$(pwd)/test-results":/home/app/test-results -e DB_HOST=$DB_HOST -e DB_CONNECTION_URL=$DB_CONNECTION_URL stock-test
+            docker run -it -v "$(pwd)/test-results":/home/app/test-results -e DB_HOST=$DB_HOST -e DB_CONNECTION_URL=$DB_CONNECTION_URL -e FUGLE_API_TOKEN=$FUGLE_API_TOKEN stock-test
       - store_test_results:
           path: test-results
       - store_artifacts:
