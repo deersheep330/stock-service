@@ -33,7 +33,7 @@ resource "aws_cloudwatch_log_group" "cloudwatch_log_group" {
 data "template_file" "container_definition" {
   template = file("${path.module}/container-definition.json.tpl")
   vars = {
-    image = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.region.name}.amazonaws.com/rent:${var.IMAGE_VERSION}"
+    image = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.region.name}.amazonaws.com/stock:${var.IMAGE_VERSION}"
     db_connection_url = data.terraform_remote_state.remote_state.outputs.rds_connection_url
     fugle_api_token = var.FUGLE_API_TOKEN
     awslogs_group = var.cloudwatch_group
