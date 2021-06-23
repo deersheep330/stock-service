@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 from stock.db import create_engine, start_session, query_newer_than
-from stock.models import PttTrend, ReunionTrend
+from stock.models import PttTrend, ReunionTrend, TwseOverBought, TwseOverSold
 from stock.price import UsPriceParser
 from stock.price import TwPriceParser
 from stock.utilities import get_db_connection_url
@@ -26,6 +26,12 @@ if __name__ == '__main__':
     for symbol in symbols:
         symbol_set.add(symbol.symbol)
     symbols = query_newer_than(session, ReunionTrend, ReunionTrend.date, datetime.now().date() - timedelta(days=14))
+    for symbol in symbols:
+        symbol_set.add(symbol.symbol)
+    symbols = query_newer_than(session, TwseOverBought, TwseOverBought.date, datetime.now().date() - timedelta(days=3))
+    for symbol in symbols:
+        symbol_set.add(symbol.symbol)
+    symbols = query_newer_than(session, TwseOverSold, TwseOverSold.date, datetime.now().date() - timedelta(days=3))
     for symbol in symbols:
         symbol_set.add(symbol.symbol)
 
