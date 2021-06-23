@@ -7,33 +7,23 @@ from .base import Base
 from ..models import *
 
 
-def create_engine_from_url(connection_url):
+def create_engine(connection_url):
     print('create new engine')
-    create_engine.engine = __create_engine(f'mysql+pymysql://{connection_url}',
-                                           pool_pre_ping=True,
-                                           pool_recycle=3600 * 7,
-                                           echo=False)
+    engine = __create_engine(f'mysql+pymysql://{connection_url}',
+                            pool_pre_ping=True,
+                            pool_recycle=3600 * 7,
+                            echo=False)
     # Amazon does not give you SUPER privileges on an RDS instance
     # (to prevent you from breaking things like replication accidentally).
     # To configure group_concat_max_len, use an RDS parameter group,
     # which allows you to configure a group of settings to apply to an instance.
     # https://stackoverflow.com/questions/31147206/amazon-rds-unable-to-execute-set-global-command
     try:
-        create_engine.engine.execute('SET GLOBAL max_allowed_packet=67108864;')
+        engine.execute('SET GLOBAL max_allowed_packet=67108864;')
     except Exception as e:
         print(e)
 
-    return create_engine.engine
-
-
-def create_engine(user, password, host, port, database):
-    print('create new engine')
-    create_engine.engine = __create_engine(f'mysql+pymysql://{user}:{password}@{host}:{port}/{database}',
-                                           pool_pre_ping=True,
-                                           pool_recycle=3600 * 7,
-                                           echo=False)
-    create_engine.engine.execute('SET GLOBAL max_allowed_packet=67108864;')
-    return create_engine.engine
+    return engine
 
 
 def create_all_tables_from_orm(engine):
@@ -72,35 +62,28 @@ def insert(session, model, _dict):
 
     stmt = __insert(table).values(_dict)
 
-    print(compile_query(stmt))
+    #print(compile_query(stmt))
     res = session.execute(stmt)
-    print(f'{res.rowcount} row(s) matched')
+    #print(f'{res.rowcount} row(s) matched')
     return res.rowcount
 
 
-def upsert(session, model, rows):
+def upsert(session, model, _dict):
+
     table = model.__table__
 
-    rowcount = 0
+    _dict_wo_pk = dict(_dict)
+    for pk in list(table.primary_key.columns):
+        del _dict_wo_pk[pk.name]
 
-    for row in rows:
-        data_dict = {}
-        for column, value in zip(table.c, row):
-            data_dict[column.name] = value
-        data_dict_wo_pk = dict(data_dict)
-        for pk in list(table.primary_key.columns):
-            del data_dict_wo_pk[pk.name]
-        stmt = insert(table).values(data_dict)
-        # print(f'data_dict = {data_dict}, wo pk = {data_dict_wo_pk}')
-        upsert_stmt = stmt.on_duplicate_key_update(data_dict_wo_pk)
+    stmt = __insert(table).values(_dict)
+    #print(f'dict = {_dict}, dict wo pk = {_dict_wo_pk}')
+    upsert_stmt = stmt.on_duplicate_key_update(_dict_wo_pk)
+    #print(compile_query(upsert_stmt))
 
-        # print(compile_query(upsert_stmt))
-        res = session.execute(upsert_stmt)
-        if res.rowcount != 0:
-            rowcount += 1
-
-    print(f'{rowcount} row(s) matched')
-    return rowcount
+    res = session.execute(upsert_stmt)
+    #print(f'execute res: {res}')
+    return res.rowcount
 
 
 def delete_older_than(session, model, date_field, date_older_than):
@@ -110,3 +93,15 @@ def delete_older_than(session, model, date_field, date_older_than):
 
 def count(session, model):
     return session.query(model).count()
+
+
+def query_newer_than(session, model, date_field, date_newer_than):
+    return session.query(model).filter(date_field >= date_newer_than).all()
+
+
+def query_date_equal_to(session, model, date_field, date):
+    return session.query(model).filter(date_field == date).all()
+
+
+def query_unique(session, model, field, value):
+    return session.query(model).filter(field == value).first()

@@ -1,0 +1,21 @@
+{
+    "ALTR": "Altera",
+    "AMAT": "Applied Materials",
+    "AMD": "Advanced Micro Devices",
+    "BRCM": "Broadcom",
+    "FSLB": "Freescale Semiconductor",
+    "IFX": "Infineon Technologies AG",
+    "INTC": "Intel",
+    "KLAC": "Kla-Tencor",
+    "LLTC": "Linear Technology",
+    "MRVL": "Marvell Technology Group",
+    "MU": "Micron Technology",
+    "MXIM": "Maxim Integrated Products",
+    "NSM": "National Semiconductor",
+    "NVLS": "Novellus Systems",
+    "STM": "STMicroelectronics NV",
+    "TER": "Teradyne",
+    "TSM": "TSMC",
+    "TXN": "Texas Instruments",
+    "XLNX": "Xilinx"
+}
