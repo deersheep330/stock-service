@@ -39,16 +39,33 @@ export DB_CONNECTION_URL="root:admin@${DB_HOST}/mydb"
 
 (7) run the application with docker
 ```
+# collect stock symbols
 python symbol_entry.py
+
+# collect ptt trend
 python ptt_trend_entry.py
+
+# collect reunion trend
 python reunion_entry.py
+
+# collect institutions overbought / oversold
 python institutions_entry.py
+
+# collect prices
 python close_price_entry.py
 python open_price_entry.py
+
+# collect quote when market open
 python quote_entry.py
 # if quote_entry.py quits early, check system time by exec: date
 # if system time is wrong, exec:
 # sudo apt-get install ntp
 # sudo apt-get install ntpdate
 # sudo ntpdate ntp.ubuntu.com
+
+# generate trend charts
+python trend_chart_entry.py
+
+# fastapi
+python fastapi_entry.py
 ```
