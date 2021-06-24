@@ -28,7 +28,7 @@ class ReunionParser():
 
         driver.get(self.url)
         try:
-            WebDriverWait(driver, 90).until(
+            WebDriverWait(driver, 15).until(
                 expected_conditions.presence_of_element_located((By.XPATH, self.xpath))
             )
         except Exception as e:
