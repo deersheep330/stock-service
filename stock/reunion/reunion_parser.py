@@ -27,9 +27,13 @@ class ReunionParser():
         driver = webdriver.Chrome(executable_path=ChromeDriverManager().install(), options=options)
 
         driver.get(self.url)
-        WebDriverWait(driver, 90).until(
-            expected_conditions.presence_of_element_located((By.XPATH, self.xpath))
-        )
+        try:
+            WebDriverWait(driver, 90).until(
+                expected_conditions.presence_of_element_located((By.XPATH, self.xpath))
+            )
+        except Exception as e:
+            print(e)
+            print(driver.find_element_by_xpath("/html/body").text)
         elements = driver.find_elements_by_xpath(self.xpath)
 
         pattern = re.compile(r'\([^)]+\)')
