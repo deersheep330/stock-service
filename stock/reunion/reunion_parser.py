@@ -27,7 +27,7 @@ class ReunionParser():
         driver = webdriver.Chrome(executable_path=ChromeDriverManager().install(), options=options)
 
         driver.get(self.url)
-        WebDriverWait(driver, 15).until(
+        WebDriverWait(driver, 90).until(
             expected_conditions.presence_of_element_located((By.XPATH, self.xpath))
         )
         elements = driver.find_elements_by_xpath(self.xpath)
