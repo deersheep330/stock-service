@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
-from stock.db import query_newer_than, create_engine, start_session, query_symbol_newer_than
-from stock.models import TwseClosePrice, UsClosePrice
+from stock.db import query_newer_than, create_engine, start_session, query_symbol_newer_than, query_unique
+from stock.models import TwseClosePrice, UsClosePrice, StockSymbol
 from stock.trend_chart.trend import Trend
 from stock.utilities import get_db_connection_url, is_tw_stock, how_many_days_ago
 
@@ -23,10 +23,12 @@ class TrendChart():
 
         self.__get_symbols__()
         for symbol in self.symbols:
-            _popularity = self.__get_popularity__(symbol)
-            _price = self.__get_price__(symbol)
+            _popularity = self.__get_popularity__(symbol.symbol)
+            _price = self.__get_price__(symbol.symbol)
             _total_popularity = sum(_popularity)
-            self.trends.append(Trend(symbol, self.dates, _popularity, _price, _total_popularity))
+            self.trends.append(Trend(symbol.symbol, symbol.name, self.dates, _popularity, _price, _total_popularity))
+
+        self.trends.sort(key=lambda trend: trend.total_popularity, reverse=True)
 
     def __get_symbols__(self):
         if self.model is None:
@@ -34,7 +36,8 @@ class TrendChart():
 
         _symbols = query_newer_than(self.session, self.model, self.model.date, how_many_days_ago(self.days))
         for symbol in _symbols:
-            self.symbols.add(symbol.symbol)
+            stock_symbol = query_unique(self.session, StockSymbol, StockSymbol.symbol, symbol.symbol)
+            self.symbols.add(stock_symbol)
 
     def __get_popularity__(self, symbol):
 
