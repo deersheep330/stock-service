@@ -33,7 +33,7 @@ class ReunionParser():
             )
         except Exception as e:
             print(e)
-            print(driver.find_element_by_xpath("/html/body").text)
+            print(f'html source: {driver.find_element_by_xpath("/html/body").text}')
         elements = driver.find_elements_by_xpath(self.xpath)
 
         pattern = re.compile(r'\([^)]+\)')
