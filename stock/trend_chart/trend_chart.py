@@ -1,5 +1,8 @@
+from datetime import datetime, timedelta
+
 from stock.db import query_newer_than, create_engine, start_session, query_symbol_newer_than
 from stock.models import TwseClosePrice, UsClosePrice
+from stock.trend_chart.trend import Trend
 from stock.utilities import get_db_connection_url, is_tw_stock, how_many_days_ago
 
 
@@ -8,14 +11,22 @@ class TrendChart():
     def __init__(self, model=None):
         self.model = model
         self.symbols = set()
+        self.popularities = []
         self.trends = []
         self.days = 14
+        self.today = how_many_days_ago(1)
+        self.dates = [(self.today - timedelta(i)).strftime("%Y/%m/%d") for i in reversed(range(self.days))]
+        print(self.dates)
 
         self.engine = create_engine(get_db_connection_url())
         self.session = start_session(self.engine)
 
         self.__get_symbols__()
-        self.__get_prices__()
+        for symbol in self.symbols:
+            _popularity = self.__get_popularity__(symbol)
+            _price = self.__get_price__(symbol)
+            _total_popularity = sum(_popularity)
+            self.trends.append(Trend(symbol, self.dates, _popularity, _price, _total_popularity))
 
     def __get_symbols__(self):
         if self.model is None:
@@ -25,24 +36,51 @@ class TrendChart():
         for symbol in _symbols:
             self.symbols.add(symbol.symbol)
 
-    def __get_prices__(self):
-        for symbol in self.symbols:
-            prices = [0] * self.days
-            print(f'for {symbol}')
-            if is_tw_stock(symbol):
-                _prices = query_symbol_newer_than(
-                    self.session,
-                    TwseClosePrice,
-                    TwseClosePrice.symbol,
-                    symbol,
-                    TwseClosePrice.date,
-                    how_many_days_ago(self.days))
-            else:
-                _prices = query_symbol_newer_than(
-                    self.session,
-                    UsClosePrice,
-                    UsClosePrice.symbol,
-                    symbol,
-                    UsClosePrice.date,
-                    how_many_days_ago(self.days))
-            print(_prices[0].price)
+    def __get_popularity__(self, symbol):
+
+        popularities = [0] * self.days
+
+        print(f'==> get popularity for {symbol}')
+
+        _popularities = query_symbol_newer_than(
+            self.session,
+            self.model,
+            self.model.symbol,
+            symbol,
+            self.model.date,
+            how_many_days_ago(self.days))
+
+        for popularity in _popularities:
+            day_diff = (self.today - popularity.date).days
+            popularities[self.days - 1 - day_diff] = popularity.popularity
+
+        return popularities
+
+    def __get_price__(self, symbol):
+
+        prices = [0] * self.days
+
+        print(f'==> get price for {symbol}')
+
+        if is_tw_stock(symbol):
+            _prices = query_symbol_newer_than(
+                self.session,
+                TwseClosePrice,
+                TwseClosePrice.symbol,
+                symbol,
+                TwseClosePrice.date,
+                how_many_days_ago(self.days))
+        else:
+            _prices = query_symbol_newer_than(
+                self.session,
+                UsClosePrice,
+                UsClosePrice.symbol,
+                symbol,
+                UsClosePrice.date,
+                how_many_days_ago(self.days))
+
+        for price in _prices:
+            day_diff = (self.today - price.date).days
+            prices[self.days - 1 - day_diff] = price.price
+
+        return prices

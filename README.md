@@ -43,7 +43,8 @@ python symbol_entry.py
 python ptt_trend_entry.py
 python reunion_entry.py
 python institutions_entry.py
-python price_entry.py
+python close_price_entry.py
+python open_price_entry.py
 python quote_entry.py
 # if quote_entry.py quits early, check system time by exec: date
 # if system time is wrong, exec:
