@@ -4,12 +4,7 @@ from stock.db import create_engine, start_session, query_newer_than
 from stock.models import PttTrend, ReunionTrend, TwseOverBought, TwseOverSold
 from stock.price import UsPriceParser
 from stock.price import TwPriceParser
-from stock.utilities import get_db_connection_url
-
-
-def is_tw_stock(_symbol):
-    return any(char.isdigit() for char in _symbol)
-
+from stock.utilities import get_db_connection_url, is_tw_stock
 
 if __name__ == '__main__':
 

@@ -96,7 +96,11 @@ def count(session, model):
 
 
 def query_newer_than(session, model, date_field, date_newer_than):
-    return session.query(model).filter(date_field >= date_newer_than).all()
+    return session.query(model).filter(date_field > date_newer_than).all()
+
+
+def query_symbol_newer_than(session, model, symbol_field, symbol, date_field, date_newer_than):
+    return session.query(model).filter(symbol_field == symbol).filter(date_field > date_newer_than).all()
 
 
 def query_date_equal_to(session, model, date_field, date):

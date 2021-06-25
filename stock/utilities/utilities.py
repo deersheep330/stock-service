@@ -1,5 +1,6 @@
 import os
 import re
+from datetime import datetime, timedelta
 
 
 def read_env(var):
@@ -25,3 +26,11 @@ def remove_common_words_from_corp_name(corp_name):
 
 def remove_non_han_from_corp_name(corp_name):
     return re.sub(r'[^\u4e00-\u9fff]+', '', corp_name)
+
+
+def is_tw_stock(_symbol):
+    return any(char.isdigit() for char in _symbol)
+
+
+def how_many_days_ago(days=14):
+    return datetime.now().date() - timedelta(days=days)
