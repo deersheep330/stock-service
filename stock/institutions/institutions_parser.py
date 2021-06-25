@@ -74,10 +74,13 @@ class InstitutionsParser():
             raise Exception(f'unsupported model type: {self.model}')
 
         for key, value in self.dict.items():
-            insert(self.session, model, {
-                'symbol': key,
-                'date': self.date,
-                'quantity': value
-            })
+            try:
+                insert(self.session, model, {
+                    'symbol': key,
+                    'date': self.date,
+                    'quantity': value
+                })
+            except Exception as e:
+                print(e)
         self.session.commit()
         self.session.close()
