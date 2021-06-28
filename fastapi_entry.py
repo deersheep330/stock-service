@@ -20,4 +20,9 @@ def reunion():
     print(reunion_trend_chart.trends)
     return reunion_trend_chart.trends
 
+
+@app.get("/health_check")
+def health_check():
+    return {"iam": "healthy"}
+
 # uvicorn fastapi_entry:app --reload
