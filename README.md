@@ -63,9 +63,6 @@ python quote_entry.py
 # sudo apt-get install ntpdate
 # sudo ntpdate ntp.ubuntu.com
 
-# generate trend charts
-python trend_chart_entry.py
-
 # fastapi
-python fastapi_entry.py
+uvicorn fastapi_entry:app --reload
 ```
