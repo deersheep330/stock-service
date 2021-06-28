@@ -33,7 +33,8 @@ if __name__ == '__main__':
 
     print('[3] reunion test:')
 
-    trends = ReunionTrends()
+    print('ignore')
+    #trends = ReunionTrends()
 
     print('[4] institutions test:')
 
