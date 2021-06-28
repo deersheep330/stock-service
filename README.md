@@ -65,4 +65,11 @@ python quote_entry.py
 
 # fastapi
 uvicorn fastapi_entry:app --reload
+
+# vue web frontend
+# sudo apt update
+# sudo apt install nodejs npm
+# npm install -g @vue/cli
+cd web
+npm run serve
 ```
