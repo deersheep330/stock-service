@@ -1,3 +1,5 @@
+import requests
+
 from stock.institutions import InstitutionsOverboughtParser, InstitutionsOversoldParser
 from stock.price import UsPriceParser, TwPriceParser
 from stock.ptt import PttTrends
@@ -42,8 +44,10 @@ if __name__ == '__main__':
 
     print('[5] quote test:')
 
-    print('ignore')
-    #Fugle('overbought', '2330').exec()
+    fugle = Fugle('overbought', '2330')
+    resp = requests.get(fugle.url)
+    json = resp.json()
+    print(json['data']['quote'])
 
     print('[6] price test:')
 

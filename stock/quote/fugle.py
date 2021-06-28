@@ -34,7 +34,7 @@ class Fugle():
 
         self.type = type
         self.symbol = symbol
-        self.url = f'https://api.fugle.tw/realtime/v0/intraday/quote?symbolId={self.symbol}&apiToken={self.token}'
+        self.url = f'https://api.fugle.tw/realtime/v0.2/intraday/quote?symbolId={self.symbol}&apiToken={self.token}'
 
         # call API every 30 seconds
         self.tick = 30
@@ -112,7 +112,7 @@ class Fugle():
 
             print(f"{self.symbol} / {self.quotes[-1]['trade']['price']} / {self.quotes[-1]['at']}")
         except Exception as e:
-            print(e)
+            print(f'quote execption: {e}')
 
     def diff(self):
         try:
