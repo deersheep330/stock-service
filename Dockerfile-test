@@ -1,4 +1,4 @@
-FROM deersheep330/python-nodejs-chrome-crontab
+FROM deersheep330/python-chrome-crontab
 
 ENV TZ=Asia/Taipei
 
