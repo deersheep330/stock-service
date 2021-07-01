@@ -26,3 +26,6 @@ __pycache__
 
 # dump
 dump*.txt
+
+# nodejs
+node_modules

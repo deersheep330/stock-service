@@ -2,7 +2,7 @@
   {
     "essential": true,
     "name": "stock-container",
-    "memory": 512,
+    "memory": 384,
     "cpu": 512,
     "image": "${image}",
     "environment": [
