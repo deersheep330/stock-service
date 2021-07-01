@@ -54,7 +54,7 @@ class UsPriceParser():
             self.datetime = self.datetime.replace(tzinfo=tz.gettz('America/New_York'))
             self.datetime = self.datetime.astimezone(tz.gettz('Asia/Taipei'))
 
-            self.price = float(prices[0].text)
+            self.price = float(prices[0].text.replace('$', ''))
 
             print(f'{self.symbol} {self.price} {self.datetime}')
         except Exception as e:

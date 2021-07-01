@@ -6,6 +6,7 @@ from stock.ptt import PttTrends
 from stock.quote import Fugle
 from stock.reunion import ReunionTrends
 from stock.symbols import Sp500Parser, DowJonesParser, NasdaqParser, SoxParser, TWSEParser, NYSEParser
+from stock.trend_chart import PttTrendChart, ReunionTrendChart
 from stock.utilities import get_db_connection_url
 from stock.db import create_engine, create_all_tables_from_orm
 
@@ -56,3 +57,11 @@ if __name__ == '__main__':
     us_price_parser.parse('T')
     tw_price_parser = TwPriceParser()
     tw_price_parser.parse('1220')
+
+    print('[7] trend charts test:')
+
+    ptt_trend_chart = PttTrendChart()
+    print(ptt_trend_chart.trends)
+
+    reunion_trend_chart = ReunionTrendChart()
+    print(reunion_trend_chart.trends)

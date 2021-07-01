@@ -41,7 +41,7 @@ class TwPriceParser():
 
         try:
             self.symbol = symbol
-            url = f'https://api.fugle.tw/realtime/v0/intraday/quote?symbolId={self.symbol}&apiToken={self.token}'
+            url = f'https://api.fugle.tw/realtime/v0.2/intraday/quote?symbolId={self.symbol}&apiToken={self.token}'
 
             print(f'==> parse url: {url}')
             resp = requests.get(url)
