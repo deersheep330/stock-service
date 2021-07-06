@@ -4,5 +4,5 @@
 30 20 * * 1-5 root /usr/local/bin/python /home/app/institutions_entry.py > /proc/1/fd/1 2>/proc/1/fd/2
 2 9 * * 1-5 root /usr/local/bin/python /home/app/quote_entry.py > /proc/1/fd/1 2>/proc/1/fd/2
 10 9 * * 1-5 root /usr/local/bin/python /home/app/open_price_entry.py > /proc/1/fd/1 2>/proc/1/fd/2
-40 13 * * 1-5 root /usr/local/bin/python /home/app/close_price_entry.py > /proc/1/fd/1 2>/proc/1/fd/2
+0 14 * * 1-5 root /usr/local/bin/python /home/app/close_price_entry.py > /proc/1/fd/1 2>/proc/1/fd/2
 # Don't remove the empty line at the end of this file. It is required to run the cron job
