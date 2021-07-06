@@ -44,6 +44,8 @@ python symbol_entry.py
 
 # collect ptt trend
 python ptt_trend_entry.py
+# if encounter [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: certificate is not yet valid
+# exec sudo ntpdate ntp.ubuntu.com
 
 # collect reunion trend
 python reunion_entry.py
@@ -65,11 +67,3 @@ python quote_entry.py
 
 # fastapi
 uvicorn fastapi_entry:app --reload
-
-# vue web frontend
-# sudo apt update
-# sudo apt install nodejs npm
-# npm install -g @vue/cli
-cd web
-npm run serve
-```
