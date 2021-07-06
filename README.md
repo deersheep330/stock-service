@@ -67,3 +67,4 @@ python quote_entry.py
 
 # fastapi
 uvicorn fastapi_entry:app --reload
+gunicorn -k uvicorn.workers.UvicornWorker fastapi_entry:app -D
