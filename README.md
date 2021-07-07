@@ -67,4 +67,4 @@ python quote_entry.py
 
 # fastapi
 uvicorn fastapi_entry:app --reload
-gunicorn -k uvicorn.workers.UvicornWorker fastapi_entry:app -D
+gunicorn -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000 --access-logfile /proc/1/fd/1 fastapi_entry:app -D
