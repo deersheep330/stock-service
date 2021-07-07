@@ -83,7 +83,12 @@ class TrendChart():
                 how_many_days_ago(self.days))
 
         for price in _prices:
-            day_diff = (self.today - price.date).days
-            prices[self.days - 1 - day_diff] = price.price
+            try:
+                day_diff = (self.today - price.date).days
+                prices[self.days - 1 - day_diff] = price.price
+            except Exception as e:
+                print('==> __get_price__ error!')
+                print(e)
+                print(self.today, price.date, (self.today - price.date).days)
 
         return prices
