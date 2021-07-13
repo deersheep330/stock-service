@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 from dateutil import parser, tz
 import requests
@@ -50,9 +50,10 @@ class UsPriceParser():
             if len(dates) == 0 or len(prices) == 0:
                 raise Exception(f'cannot get date or price for {self.symbol}')
 
-            self.datetime = parser.parse(dates[0].text)
-            self.datetime = self.datetime.replace(tzinfo=tz.gettz('America/New_York'))
-            self.datetime = self.datetime.astimezone(tz.gettz('Asia/Taipei'))
+            #self.datetime = parser.parse(dates[0].text)
+            #self.datetime = self.datetime.replace(tzinfo=tz.gettz('America/New_York'))
+            #self.datetime = self.datetime.astimezone(tz.gettz('Asia/Taipei'))
+            self.datetime = date.today()
 
             self.price = float(prices[0].text.replace('$', ''))
 

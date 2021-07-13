@@ -1,4 +1,5 @@
-from datetime import datetime, timedelta
+import time
+from datetime import datetime, timedelta, date
 import requests
 
 from stock.db import create_engine, start_session, insert, delete_older_than
@@ -48,13 +49,15 @@ class TwPriceParser():
             json = resp.json()
             self.price_open = float(json['data']['quote']['priceOpen']['price'])
             self.price_close = float(json['data']['quote']['trade']['price'])
-            self.datetime = json['data']['quote']['priceOpen']['at']
-            self.datetime = datetime.strptime(self.datetime, '%Y-%m-%dT%H:%M:%S.%fZ')
+            #self.datetime = json['data']['quote']['priceOpen']['at']
+            #self.datetime = datetime.strptime(self.datetime, '%Y-%m-%dT%H:%M:%S.%fZ')
+            self.datetime = date.today()
 
             print(f'{self.symbol} {self.price_open} {self.price_close} {self.datetime}')
         except Exception as e:
             print(e)
         finally:
+            time.sleep(5)
             return self
 
     def save_open_price_to_db(self):
