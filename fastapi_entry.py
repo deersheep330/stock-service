@@ -16,31 +16,31 @@ app.add_middleware(
 )
 
 
-@app.get("/ptt")
+@app.get("/api/ptt")
 def ptt():
     ptt_trend_chart = PttTrendChart()
     print(ptt_trend_chart.trends)
     return ptt_trend_chart.trends[:8]
 
 
-@app.get("/reunion")
+@app.get("/api/reunion")
 def reunion():
     reunion_trend_chart = ReunionTrendChart()
     print(reunion_trend_chart.trends)
     return reunion_trend_chart.trends[:8]
 
 
-@app.get("/ins-buy")
+@app.get("/api/ins-buy")
 def ins_buy():
     return []
 
 
-@app.get("/ins-sell")
+@app.get("/api/ins-sell")
 def ins_sell():
     return []
 
 
-@app.get("/health_check")
+@app.get("/api/health_check")
 def health_check():
     return {"iam": "healthy"}
 
