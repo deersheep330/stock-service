@@ -51,11 +51,20 @@ class InstitutionsChart():
                         stock_symbol = query_unique(self.session, StockSymbol, StockSymbol.symbol, yesterday_result.symbol)
                         fugle_result = query_symbol_date_equal_to(self.session, self.fugle_model, self.fugle_model.symbol, yesterday_result.symbol, self.fugle_model.date, today)
                         print(fugle_result)
-                        trend = {}
-                        trend[day_before_yesterday_result.date.strftime('%Y-%m-%d')] = day_before_yesterday_result.quantity
-                        trend[yesterday_result.date.strftime('%Y-%m-%d')] = yesterday_result.quantity
+                        trend = []
+                        trend.append({
+                            'date': day_before_yesterday_result.date.strftime('%Y-%m-%d'),
+                            'quantity': day_before_yesterday_result.quantity
+                        })
+                        trend.append({
+                            'date': yesterday_result.date.strftime('%Y-%m-%d'),
+                            'quantity': yesterday_result.quantity
+                        })
                         if fugle_result is not None:
-                            trend[today.strftime('%Y-%m-%d') + ' predict'] = fugle_result.quantity
+                            trend.append({
+                                'date': today.strftime('%Y-%m-%d') + ' predict',
+                                'quantity': fugle_result.quantity
+                            })
                         self.trends.append({
                             'symbol': stock_symbol.symbol,
                             'name': stock_symbol.name,
