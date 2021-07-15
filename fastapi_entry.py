@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from stock.institutions_chart import InstitutionsOverBoughtChart, InstitutionsOverSoldChart
 from stock.trend_chart import PttTrendChart, ReunionTrendChart
 
 app = FastAPI()
@@ -32,12 +33,14 @@ def reunion():
 
 @app.get("/api/ins-buy")
 def ins_buy():
-    return []
+    chart = InstitutionsOverBoughtChart()
+    return chart.trends
 
 
 @app.get("/api/ins-sell")
 def ins_sell():
-    return []
+    chart = InstitutionsOverSoldChart()
+    return chart.trends
 
 
 @app.get("/api/health_check")

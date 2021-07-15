@@ -54,10 +54,15 @@ class InstitutionsChart():
                         trend = {}
                         trend[day_before_yesterday_result.date.strftime('%Y-%m-%d')] = day_before_yesterday_result.quantity
                         trend[yesterday_result.date.strftime('%Y-%m-%d')] = yesterday_result.quantity
-                        trend[today.strftime('%Y-%m-%d') + ' predict'] = fugle_result.quantity
+                        if fugle_result is not None:
+                            trend[today.strftime('%Y-%m-%d') + ' predict'] = fugle_result.quantity
                         self.trends.append({
                             'symbol': stock_symbol.symbol,
                             'name': stock_symbol.name,
-                            'trends': trend
+                            'trends': trend,
+                            'total_trends': yesterday_result.quantity + day_before_yesterday_result.quantity
                         })
+
+            self.trends.sort(key=lambda trend: trend['total_trends'], reverse=True)
+
         print(self.trends)
