@@ -103,6 +103,10 @@ def query_symbol_newer_than(session, model, symbol_field, symbol, date_field, da
     return session.query(model).filter(symbol_field == symbol).filter(date_field > date_newer_than).all()
 
 
+def query_symbol_date_equal_to(session, model, symbol_field, symbol, date_field, date):
+    return session.query(model).filter(symbol_field == symbol).filter(date_field == date).first()
+
+
 def query_date_equal_to(session, model, date_field, date):
     return session.query(model).filter(date_field == date).all()
 
