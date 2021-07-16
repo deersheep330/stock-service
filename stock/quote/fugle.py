@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, time
+from datetime import datetime, timedelta, time, date
 import json
 import os
 from pprint import pprint
@@ -58,7 +58,7 @@ class Fugle():
         self.off_time = time(13, 32)
 
         self.is_closed = False
-        self.date = None
+        self.date = date.today()
 
     def is_active(self):
         now = datetime.now(timezone('Asia/Taipei')).time()
@@ -75,7 +75,6 @@ class Fugle():
             await asyncio.sleep(self.tick)
 
         if len(self.quotes) != 0:
-            self.date = datetime.strptime(self.quotes[-1]['at'], '%Y-%m-%dT%H:%M:%S.%fZ')
             self.diff_units = int(self.ask_units - self.bid_units)
         print(f'[{self.symbol}] {self.date} quote =====>')
         print(f'market close ? {self.is_closed}')
