@@ -122,8 +122,8 @@ class PttTrends():
         print(self.normalize_word_freq)
 
     def save_to_db(self):
-        for item in self.normalize_word_freq:
-            if item[1] < 10:
+        for index, item in enumerate(self.normalize_word_freq):
+            if index > 16 or item[1] < 10:
                 break
             else:
                 insert(self.session, PttTrend, {
