@@ -16,6 +16,10 @@ def get_db_connection_url():
     return read_env('DB_CONNECTION_URL')
 
 
+def get_redis_host():
+    return read_env('REDIS_HOST')
+
+
 def get_fugle_api_token():
     return read_env('FUGLE_API_TOKEN')
 
