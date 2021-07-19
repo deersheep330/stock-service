@@ -32,7 +32,7 @@ COPY ./wait-for-it.sh .
 
 # Run the command on container startup
 # https://stackoverflow.com/questions/37458287/how-to-run-a-cron-job-inside-a-docker-container
-CMD /usr/local/bin/python symbol_entry.py && /usr/local/bin/python trend_chart_cronjob.py && /usr/local/bin/python institutions_chart_cronjob.py && gunicorn -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000 --access-logfile /proc/1/fd/1 fastapi_entry:app -D && /bin/bash ./cron_entrypoint.sh > /proc/1/fd/1 2>/proc/1/fd/2
+CMD /usr/local/bin/python symbol_entry.py && gunicorn -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000 --access-logfile /proc/1/fd/1 fastapi_entry:app -D && /bin/bash ./cron_entrypoint.sh > /proc/1/fd/1 2>/proc/1/fd/2
 # CMD ["cron", "-f"]
 
 #Quick note about a gotcha:
