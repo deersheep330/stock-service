@@ -1,8 +1,12 @@
-from fastapi import FastAPI
+import pickle
+
+import redis
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 from stock.institutions_chart import InstitutionsOverBoughtChart, InstitutionsOverSoldChart
 from stock.trend_chart import PttTrendChart, ReunionTrendChart
+from stock.utilities import get_redis_host
 
 app = FastAPI()
 
@@ -19,28 +23,38 @@ app.add_middleware(
 
 @app.get("/api/ptt")
 def ptt():
-    ptt_trend_chart = PttTrendChart()
-    print(ptt_trend_chart.trends)
-    return ptt_trend_chart.trends[:8]
+    r = redis.Redis(host=get_redis_host(), port=6379, db=0)
+    if r.exists('ptt'):
+        return pickle.loads(r.get('ptt'))
+    else:
+        raise HTTPException(status_code=404, detail="Item not found")
 
 
 @app.get("/api/reunion")
 def reunion():
-    reunion_trend_chart = ReunionTrendChart()
-    print(reunion_trend_chart.trends)
-    return reunion_trend_chart.trends[:8]
+    r = redis.Redis(host=get_redis_host(), port=6379, db=0)
+    if r.exists('reunion'):
+        return pickle.loads(r.get('reunion'))
+    else:
+        raise HTTPException(status_code=404, detail="Item not found")
 
 
 @app.get("/api/ins-buy")
 def ins_buy():
-    chart = InstitutionsOverBoughtChart()
-    return chart.trends
+    r = redis.Redis(host=get_redis_host(), port=6379, db=0)
+    if r.exists('ins_buy'):
+        return pickle.loads(r.get('ins_buy'))
+    else:
+        raise HTTPException(status_code=404, detail="Item not found")
 
 
 @app.get("/api/ins-sell")
 def ins_sell():
-    chart = InstitutionsOverSoldChart()
-    return chart.trends
+    r = redis.Redis(host=get_redis_host(), port=6379, db=0)
+    if r.exists('ins_sell'):
+        return pickle.loads(r.get('ins_sell'))
+    else:
+        raise HTTPException(status_code=404, detail="Item not found")
 
 
 @app.get("/api/health_check")

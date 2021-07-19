@@ -35,6 +35,7 @@ docker run --name adminer --link mysql:mydb -p 7890:8080 -d adminer
 ```
 export DB_HOST="$(hostname -I | tr -d "[:blank:]"):3306"
 export DB_CONNECTION_URL="root:admin@${DB_HOST}/mydb"
+export REDIS_HOST="$(hostname -I | tr -d "[:blank:]")"
 ```
 
 (7) run the application with docker

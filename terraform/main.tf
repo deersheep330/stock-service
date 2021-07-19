@@ -35,6 +35,7 @@ data "template_file" "container_definition" {
   vars = {
     image = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${data.aws_region.region.name}.amazonaws.com/stock:${var.IMAGE_VERSION}"
     db_connection_url = data.terraform_remote_state.remote_state.outputs.rds_connection_url
+    redis_host = data.terraform_remote_state.remote_state.outputs.redis_host
     fugle_api_token = var.FUGLE_API_TOKEN
     awslogs_group = var.cloudwatch_group
     awslogs_region = data.aws_region.region.name
