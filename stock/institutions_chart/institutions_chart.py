@@ -48,22 +48,37 @@ class InstitutionsChart():
                 for j in range(len(day_before_yesterday_results)):
                     day_before_yesterday_result = day_before_yesterday_results[j]
                     if yesterday_result.symbol == day_before_yesterday_result.symbol:
+
                         stock_symbol = query_unique(self.session, StockSymbol, StockSymbol.symbol, yesterday_result.symbol)
                         fugle_result = query_symbol_date_equal_to(self.session, self.fugle_model, self.fugle_model.symbol, yesterday_result.symbol, self.fugle_model.date, today)
                         print(fugle_result)
+
+                        day_before_yesterday_price = query_symbol_date_equal_to(self.session, TwseClosePrice, TwseClosePrice.symbol, yesterday_result.symbol, TwseClosePrice.date, day_before_yesterday)
+                        yesterday_price = query_symbol_date_equal_to(self.session, TwseClosePrice, TwseClosePrice.symbol, yesterday_result.symbol, TwseClosePrice.date, yesterday)
+                        today_price = query_symbol_date_equal_to(self.session, TwseClosePrice, TwseClosePrice.symbol, yesterday_result.symbol, TwseClosePrice.date, today)
+
                         trend = []
                         trend.append({
                             'date': day_before_yesterday_result.date.strftime('%Y-%m-%d'),
-                            'quantity': day_before_yesterday_result.quantity
+                            'quantity': day_before_yesterday_result.quantity,
+                            'price': day_before_yesterday_price.price,
+                            'change': day_before_yesterday_price.change,
+                            'percentage': day_before_yesterday_price.percentage
                         })
                         trend.append({
                             'date': yesterday_result.date.strftime('%Y-%m-%d'),
-                            'quantity': yesterday_result.quantity
+                            'quantity': yesterday_result.quantity,
+                            'price': yesterday_price.price,
+                            'change': yesterday_price.change,
+                            'percentage': yesterday_price.percentage
                         })
                         if fugle_result is not None:
                             trend.append({
                                 'date': today.strftime('%Y-%m-%d') + ' predict',
-                                'quantity': fugle_result.quantity
+                                'quantity': fugle_result.quantity,
+                                'price': today_price.price,
+                                'change': today_price.change,
+                                'percentage': today_price.percentage
                             })
                         self.trends.append({
                             'symbol': stock_symbol.symbol,
