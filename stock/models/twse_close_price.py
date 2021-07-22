@@ -10,6 +10,8 @@ class TwseClosePrice(Base):
     symbol = Column(String(16), ForeignKey('stock_symbol.symbol'), nullable=False, primary_key=True)
     date = Column(Date, nullable=False, primary_key=True, server_default=text('(CURRENT_DATE)'))
     price = Column(Float, nullable=False)
+    change = Column(Float, nullable=True)
+    percentage = Column(Float, nullable=True)
     stock = relationship('StockSymbol')
 
     def __repr__(self):
