@@ -70,6 +70,9 @@ python quote_entry.py
 uvicorn fastapi_entry:app --reload
 gunicorn -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000 --access-logfile /proc/1/fd/1 fastapi_entry:app -D
 
+# setup redis
+docker run -d -p 6379:6379 redis
+
 # setup alembic
 (1) alembic init alembic
 (2) modify sqlalchemy.url in alembic.ini
