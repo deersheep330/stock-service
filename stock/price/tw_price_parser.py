@@ -35,6 +35,8 @@ class TwPriceParser():
         self.price_open = None
         self.price_close = None
         self.datetime = None
+        self.change = None
+        self.percentage = None
 
     def parse(self, symbol):
 
@@ -53,7 +55,11 @@ class TwPriceParser():
             #self.datetime = datetime.strptime(self.datetime, '%Y-%m-%dT%H:%M:%S.%fZ')
             self.datetime = date.today()
 
-            print(f'{self.symbol} {self.price_open} {self.price_close} {self.datetime}')
+            # for close price
+            self.change = float(json['data']['quote']['change'])
+            self.percentage = "{:4.2f}".format(float(json['data']['quote']['changePercent']) * 100)
+
+            print(f'{self.symbol} {self.price_open} {self.price_close} {self.datetime} {self.change} {self.percentage}')
         except Exception as e:
             print(e)
         finally:
@@ -77,15 +83,17 @@ class TwPriceParser():
 
     def save_close_price_to_db(self):
 
-        if self.symbol is None or self.price_close is None or self.datetime is None:
-            print(f'some data missing! cannot write to db: {self.datetime}|{self.symbol}|{self.price_close}')
+        if self.symbol is None or self.price_close is None or self.datetime is None or self.change is None or self.percentage is None:
+            print(f'some data missing! cannot write to db: {self.datetime}|{self.symbol}|{self.price_close}|{self.change}|{self.percentage}')
             return
 
         session = start_session(self.engine)
         insert(session, TwseClosePrice, {
             'symbol': self.symbol,
             'date': self.datetime,
-            'price': self.price_close
+            'price': self.price_close,
+            'change': self.change,
+            'percentage': self.percentage
         })
         session.commit()
         session.close()
