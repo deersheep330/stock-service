@@ -21,9 +21,6 @@ pyvenv.cfg
 __pycache__
 *.pyc
 
-# properties file
-*.ini
-
 # dump
 dump*.txt
 

@@ -69,3 +69,23 @@ python quote_entry.py
 # fastapi
 uvicorn fastapi_entry:app --reload
 gunicorn -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000 --access-logfile /proc/1/fd/1 fastapi_entry:app -D
+
+# setup redis
+docker run -d -p 6379:6379 redis
+
+# setup alembic
+(1) alembic init alembic
+(2) modify sqlalchemy.url in alembic.ini
+(3) modify target_metadata in alembic/env.py
+(4) alembic revision --autogenerate
+(5) review changes in revisions/
+(6) alembic history --verbose
+(7) alembic upgrade head
+
+# mysql command line login
+mysql -h <host_url> -P 3306 -u <username> -p
+show databases;
+use <db_name>;
+show tables;
+describe <table_name>;
+quit;
