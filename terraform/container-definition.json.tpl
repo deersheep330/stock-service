@@ -2,7 +2,7 @@
   {
     "essential": true,
     "name": "stock-container",
-    "memory": 384,
+    "memory": 512,
     "cpu": 512,
     "image": "${image}",
     "portMappings": [
